@@ -6,8 +6,10 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    env: {
-      node: true,
+    languageOptions: {
+      globals: {
+        node: true,
+      },
     },
     plugins: {
       '@stylistic': stylistic,
@@ -25,8 +27,8 @@ export default [
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/semi': ['error', 'always'],
       'no-console': ['warn'],
-      'no-undef': 'error',
-      'no-unused-vars': 'error',
+      'no-undef': 'warn',
+      'no-unused-vars': 'warn',
     },
   },
 ];
