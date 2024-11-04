@@ -2,9 +2,10 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylistic from '@stylistic/eslint-plugin';
 
-export default [
+export default tseslint.config(
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.strict,
+  ...tseslint.configs.stylistic,
   {
     languageOptions: {
       globals: {
@@ -26,9 +27,9 @@ export default [
       '@stylistic/quote-props': ['error', 'consistent-as-needed'],
       '@stylistic/quotes': ['error', 'single'],
       '@stylistic/semi': ['error', 'always'],
+      '@typescript-eslint/no-unused-vars': ['error'],
+      'no-undef': ['error'],
       'no-console': ['warn'],
-      'no-undef': 'warn',
-      'no-unused-vars': 'warn',
     },
   },
-];
+);
