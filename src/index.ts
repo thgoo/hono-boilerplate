@@ -1,14 +1,14 @@
 import { Hono } from 'hono';
+import { csrf } from 'hono/csrf';
 import { logger } from 'hono/logger';
+import auth from '~/auth';
 
-const app = new Hono();
+const app = new Hono({ strict: false });
+app.use(csrf());
 app.use(logger());
 
-app.get('/', c => {
-  return c.json({
-    message: 'This is a very long texto to test max line length!',
-  });
-});
+// auth
+app.route('/api/auth', auth);
 
 export default {
   port: 8000,
