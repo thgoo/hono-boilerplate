@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { validator } from 'hono/validator';
-import { HTTP_STATUS_CODE } from '~/constants';
-import { NewUser } from '~/db/schemas/users';
+import type { NewUser } from '~/db/schemas/users';
+import { HTTP_STATUS_CODE } from '~/constants/http';
 import { isAuthorized } from './middleware/isAuthorized';
 import { isGuest } from './middleware/isGuest';
 import { userLoginSchema, userRegisterSchema } from './schemas';
@@ -75,8 +75,8 @@ app.post(
       const body = c.req.valid('json');
       const user = await userService.getUserByEmail(body.email);
       const passwordIsValid = await passwordService.verifyPasswordHash(
-        user.password,
         body.password,
+        user.password,
       );
 
       if (!user || !passwordIsValid) return c.json({ message: 'Invalid credentials' }, HTTP_STATUS_CODE.UNAUTHORIZED);

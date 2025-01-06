@@ -4,7 +4,7 @@ import {
   encodeHexLowerCase,
 } from '@oslojs/encoding';
 import { eq } from 'drizzle-orm';
-import { ENV } from '~/constants';
+import { ENV } from '~/constants/env';
 import db from '~/db';
 import { sessionsTable, type Session } from '~/db/schemas/sessions';
 import { usersTable } from '~/db/schemas/users';

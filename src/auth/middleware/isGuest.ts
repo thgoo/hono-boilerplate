@@ -1,6 +1,6 @@
-import { MiddlewareHandler } from 'hono';
+import type { MiddlewareHandler } from 'hono';
 import { getCookie } from 'hono/cookie';
-import { HTTP_STATUS_CODE } from '~/constants';
+import { HTTP_STATUS_CODE } from '~/constants/http';
 import SessionService from '../services/session-service';
 
 const sessionService = new SessionService();

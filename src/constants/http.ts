@@ -1,8 +1,3 @@
-export const ENV = {
-  PROD: 'production',
-  DEV: 'development',
-};
-
 export enum HTTP_STATUS_CODE {
   // Informational responses
   CONTINUE = 100,

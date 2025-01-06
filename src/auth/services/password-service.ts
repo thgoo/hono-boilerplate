@@ -1,22 +1,16 @@
-import { hash, verify } from '@node-rs/argon2';
 import { sha1 } from '@oslojs/crypto/sha1';
 import { encodeHexLowerCase } from '@oslojs/encoding';
 
 class PasswordService {
   async hashPassword(password: string): Promise<string> {
-    return await hash(password, {
-      memoryCost: 19456,
-      timeCost: 2,
-      outputLen: 32,
-      parallelism: 1,
-    });
+    return Bun.password.hash(password);
   }
 
   async verifyPasswordHash(
-    hash: string,
     password: string,
+    hash: string,
   ): Promise<boolean> {
-    return await verify(hash, password);
+    return Bun.password.verify(password, hash);
   }
 
   async verifyPasswordStrength(

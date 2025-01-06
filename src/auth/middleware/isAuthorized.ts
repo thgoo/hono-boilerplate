@@ -2,10 +2,42 @@ import { getCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
 import type { Session } from '~/db/schemas/sessions';
 import type { User } from '~/db/schemas/users';
-import { HTTP_STATUS_CODE } from '~/constants';
+import { HTTP_STATUS_CODE } from '~/constants/http';
 import SessionService from '../services/session-service';
 
 const sessionService = new SessionService();
+
+// Define utility types
+interface ObjectWithPassword {
+  password?: string;
+  [key: string]: unknown;
+}
+
+const isObjectWithPassword = (value: unknown): value is ObjectWithPassword => {
+  return typeof value === 'object' && value !== null && 'password' in value;
+};
+
+const removePassword = <T>(data: T): T => {
+  if (!data || typeof data !== 'object') {
+    return data;
+  }
+
+  if (Array.isArray(data)) {
+    return data.map(removePassword) as T;
+  }
+
+  if (isObjectWithPassword(data)) {
+    const { password, ...rest } = data;
+    return rest as T;
+  }
+
+  const result = { ...data };
+  for (const key in result) {
+    result[key] = removePassword(result[key]);
+  }
+
+  return result;
+};
 
 export const isAuthorized = createMiddleware<{
   Variables: {
@@ -35,9 +67,8 @@ export const isAuthorized = createMiddleware<{
   const responseData = response.headers.get('Content-Type')?.includes('application/json')
     ? await response.json()
     : null;
-  if (responseData?.user?.password) delete responseData.user.password;
-  c.res = undefined;
-  c.res = new Response(JSON.stringify(responseData), {
+  const sanitizedData = removePassword(responseData);
+  c.res = new Response(JSON.stringify(sanitizedData), {
     headers: response.headers,
     status: response.status,
   });
