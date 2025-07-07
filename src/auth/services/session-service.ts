@@ -4,11 +4,11 @@ import {
   encodeHexLowerCase,
 } from '@oslojs/encoding';
 import { eq } from 'drizzle-orm';
-import { ENV } from '~/constants/env';
+import type { SessionValidationResult } from '../types';
+import { config } from '~/config';
 import db from '~/db';
 import { sessionsTable, type Session } from '~/db/schemas/sessions';
 import { usersTable } from '~/db/schemas/users';
-import { SessionValidationResult } from '../types';
 
 class SessionService {
   public generateSessionToken(): string {
@@ -43,7 +43,7 @@ class SessionService {
       expiresAt
       || new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
     ).toUTCString();
-    if (process.env.NODE_ENV === ENV.PROD) {
+    if (config.NODE_ENV === 'production') {
       // When deployed over HTTPS
       response.headers.append(
         'Set-Cookie',
@@ -106,7 +106,7 @@ class SessionService {
   }
 
   public deleteSessionTokenCookie(response: Response): void {
-    if (process.env.NODE_ENV === ENV.PROD) {
+    if (config.NODE_ENV === 'production') {
       // When deployed over HTTPS
       response.headers.append(
         'Set-Cookie',

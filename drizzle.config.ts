@@ -6,7 +6,6 @@ export default defineConfig({
   schema: './src/db/schemas/**/*.ts',
   dialect: 'mysql',
   dbCredentials: {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    url: process.env.DATABASE_URL!,
+    url: process.env['DATABASE_URL'] || '',
   },
 });

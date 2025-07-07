@@ -1,6 +1,7 @@
 import { eq } from 'drizzle-orm';
+import type { NewUser } from '~/db/schemas/users';
 import db from '~/db';
-import { NewUser, usersTable } from '~/db/schemas/users';
+import { usersTable } from '~/db/schemas/users';
 
 class UserService {
   async userExists(email: string) {
