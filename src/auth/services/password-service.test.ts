@@ -46,7 +46,7 @@ describe('PasswordService', () => {
     it('should reject passwords that are too short', async () => {
       const shortPassword = '1234567'; // Less than 8 characters
       const result = await passwordService.verifyPasswordStrength(shortPassword);
-      expect(result).toBe(true);
+      expect(result).toBe(false);
     });
 
     it('should reject passwords that are too long', async () => {
