@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import PasswordService from './password-service';
 
-// Import RequestInit type from the fetch API
 type RequestInit = Parameters<typeof fetch>[1];
 
 describe('PasswordService', () => {
@@ -16,7 +15,6 @@ describe('PasswordService', () => {
       const password = 'test-password';
       const hash = await passwordService.hashPassword(password);
 
-      // Verify the hash is a string and not the original password
       expect(typeof hash).toBe('string');
       expect(hash).not.toBe(password);
       expect(hash.length).toBeGreaterThan(0);
@@ -44,20 +42,18 @@ describe('PasswordService', () => {
 
   describe('verifyPasswordStrength', () => {
     it('should reject passwords that are too short', async () => {
-      const shortPassword = '1234567'; // Less than 8 characters
+      const shortPassword = '1234567';
       const result = await passwordService.verifyPasswordStrength(shortPassword);
       expect(result).toBe(false);
     });
 
     it('should reject passwords that are too long', async () => {
-      // Create a password with 256 characters (too long)
       const longPassword = 'a'.repeat(256);
       const result = await passwordService.verifyPasswordStrength(longPassword);
       expect(result).toBe(false);
     });
 
     it('should make API call to check for compromised passwords', async () => {
-      // Mock the fetch function
       const originalFetch = global.fetch;
       const mockFetch = mock();
       mockFetch.mockImplementation(async () => {
@@ -85,22 +81,18 @@ describe('PasswordService', () => {
         const password = 'StrongPassword123';
         await passwordService.verifyPasswordStrength(password);
 
-        // Verify that fetch was called with the correct URL pattern
         expect(mockFetch).toHaveBeenCalled();
-        // Type assertion for TypeScript
         type FetchCall = [string | URL | Request, RequestInit | undefined];
         const calls = mockFetch.mock.calls as unknown as FetchCall[];
         expect(calls.length).toBeGreaterThan(0);
         const url = calls[0][0];
         expect(String(url)).toContain('https://api.pwnedpasswords.com/range/');
       } finally {
-        // Restore the original fetch
         global.fetch = originalFetch;
       }
     });
 
     it('should accept a strong password', async () => {
-      // Mock the fetch function to return empty data (no compromised passwords)
       const originalFetch = global.fetch;
       const mockFetch = mock();
       mockFetch.mockImplementation(async () => {
@@ -129,14 +121,11 @@ describe('PasswordService', () => {
         const result = await passwordService.verifyPasswordStrength(password);
         expect(result).toBe(true);
       } finally {
-        // Restore the original fetch
         global.fetch = originalFetch;
       }
     });
 
     it('should reject a compromised password', async () => {
-      // For this test, we'll directly mock the verifyPasswordStrength method
-      // since mocking the exact hash match is complex
       const originalVerifyPasswordStrength = passwordService.verifyPasswordStrength;
       passwordService.verifyPasswordStrength = async () => false;
 
@@ -145,7 +134,6 @@ describe('PasswordService', () => {
         const result = await passwordService.verifyPasswordStrength(password);
         expect(result).toBe(false);
       } finally {
-        // Restore the original method
         passwordService.verifyPasswordStrength = originalVerifyPasswordStrength;
       }
     });

@@ -1,5 +1,5 @@
-import { Session } from '~/db/schemas/sessions';
-import { User } from '~/db/schemas/users';
+import type { Session } from '~/db/schemas/sessions';
+import type { User } from '~/db/schemas/users';
 
 export type SessionValidationResult =
   | { session: Session; user: User }
