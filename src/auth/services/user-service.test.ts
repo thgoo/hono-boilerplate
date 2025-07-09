@@ -3,7 +3,6 @@ import db from '~/db';
 import { usersTable } from '~/db/schemas/users';
 import UserService from './user-service';
 
-// Mock the database
 mock.module('~/db', () => {
   return {
     default: {

@@ -1,4 +1,4 @@
-import { InferSelectModel } from 'drizzle-orm';
+import type { InferSelectModel } from 'drizzle-orm';
 import { bigint, datetime, mysqlTable, varchar } from 'drizzle-orm/mysql-core';
 import { usersTable } from './users';
 

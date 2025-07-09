@@ -7,7 +7,6 @@ import SessionService from '../services/session-service';
 
 const sessionService = new SessionService();
 
-// Define utility types
 interface ObjectWithPassword {
   password?: string;
   [key: string]: unknown;
