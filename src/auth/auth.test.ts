@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-function */
-
 import { beforeEach, describe, expect, it, mock, type Mock } from 'bun:test';
 import { Hono } from 'hono';
 import type { SessionValidationResult } from './types';
@@ -30,7 +29,6 @@ describe('Auth Routes', () => {
   };
 
   beforeEach(() => {
-    // Create mock services
     mockUserService = {
       getUserByEmail: mock(() => {}),
       userExists: mock(() => {}),
@@ -53,13 +51,11 @@ describe('Auth Routes', () => {
       verifyPasswordStrength: mock(() => {}),
     };
 
-    // Create the app using the factory function with mock services
-    // Disable logger for cleaner test output
     app = createApp({
       userService: mockUserService,
       sessionService: mockSessionService as any,
       passwordService: mockPasswordService,
-      enableLogger: false, // Disable logger in tests
+      enableLogger: false,
     });
   });
 
@@ -94,8 +90,8 @@ describe('Auth Routes', () => {
       const email = 'test@example.com';
       const password = 'wrong-password';
 
-      mockUserService.getUserByEmail.mockResolvedValue(null); // User not found
-      mockPasswordService.verifyPasswordHash.mockResolvedValue(false); // Password incorrect
+      mockUserService.getUserByEmail.mockResolvedValue(null);
+      mockPasswordService.verifyPasswordHash.mockResolvedValue(false);
 
       const res = await app.request('/api/auth/login', {
         method: 'POST',
@@ -112,7 +108,7 @@ describe('Auth Routes', () => {
       const res = await app.request('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'invalid-email', password: '123' }), // Invalid email and short password
+        body: JSON.stringify({ email: 'invalid-email', password: '123' }),
       });
 
       expect(res.status).toBe(HTTP_STATUS_CODE.BAD_REQUEST);

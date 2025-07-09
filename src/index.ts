@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { csrf } from 'hono/csrf';
+import { HTTPException } from 'hono/http-exception';
 import { logger } from 'hono/logger';
 import auth from '~/auth';
 import PasswordService from '~/auth/services/password-service';
@@ -11,7 +12,6 @@ import { isAuthorized } from './auth/middleware/isAuthorized';
 import { isGuest } from './auth/middleware/isGuest';
 import { HTTP_STATUS_CODE } from './constants/http';
 
-// Factory function to create the app with configurable services
 export function createApp({
   userService = new UserService(),
   sessionService = new SessionService(),
@@ -20,15 +20,9 @@ export function createApp({
 } = {}) {
   const app = new Hono({ strict: true });
 
-  // --- Middleware ---
-  app.use(csrf());
+  if (process.env.NODE_ENV === 'production') app.use(csrf());
+  if (enableLogger) app.use(logger());
 
-  // Only add logger if enabled (disable in tests for cleaner output)
-  if (enableLogger) {
-    app.use(logger());
-  }
-
-  // Dependency Injection Middleware
   app.use('*', async (c, next) => {
     c.set('userService', userService);
     c.set('sessionService', sessionService);
@@ -36,7 +30,6 @@ export function createApp({
     await next();
   });
 
-  // --- Routes ---
   app.route('/api/auth', auth);
 
   app.get('/api/example/public', c => {
@@ -52,19 +45,27 @@ export function createApp({
     return c.json({ message: 'You are a guest. This route is only for unauthenticated users.' });
   });
 
-  // --- Global Error Handler ---
-  app.onError((err, c) => {
+  app.onError(async (err, c) => {
     if (err instanceof HttpError) {
       return c.json({ message: err.message }, { status: err.statusCode });
     }
 
-    return c.json({ message: 'Internal Server Error' }, { status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR });
+    if (err instanceof HTTPException) {
+      const errMessage = await err.getResponse().text();
+      return c.json({ message: errMessage }, { status: err.status });
+    }
+
+    return c.json(
+      {
+        message: err.message || 'Internal Server Error',
+      }, {
+        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
+      });
   });
 
   return app;
 }
 
-// Create the default app instance
 const app = createApp();
 
 export default {
