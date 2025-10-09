@@ -113,10 +113,10 @@ This boilerplate uses **rolling sessions** for simplicity and excellent UX:
 
 **Why Rolling Sessions?**
 
-✅ Simple implementation (1 token vs 2)
-✅ Great user experience (no surprise logouts)
-✅ Sufficient security for most web applications
-✅ Industry standard (used by GitHub, Gmail, Facebook)
+- Simple implementation (1 token vs 2)
+- Great user experience (no surprise logouts)
+- Sufficient security for most web applications
+- Industry standard (used by GitHub, Gmail, Facebook)
 
 **When to Consider Refresh Tokens Instead:**
 
