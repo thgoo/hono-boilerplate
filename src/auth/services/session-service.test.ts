@@ -56,7 +56,7 @@ describe('SessionService', () => {
 
       const mockValues = mock(() => Promise.resolve());
       const mockInsert = mock(() => ({ values: mockValues }));
-      (mockDb as any).insert = mockInsert;
+      (mockDb as any).insert = mockInsert; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const session = await sessionService.createSession(token, userId);
 
@@ -74,7 +74,7 @@ describe('SessionService', () => {
 
       const mockValues = mock(() => Promise.resolve());
       const mockInsert = mock(() => ({ values: mockValues }));
-      (mockDb as any).insert = mockInsert;
+      (mockDb as any).insert = mockInsert; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const session = await sessionService.createSession(token, userId);
       const afterCreate = Date.now();
@@ -122,7 +122,7 @@ describe('SessionService', () => {
       const mockInnerJoin = mock(() => ({ where: mockWhere }));
       const mockFrom = mock(() => ({ innerJoin: mockInnerJoin }));
       const mockSelect = mock(() => ({ from: mockFrom }));
-      (mockDb as any).select = mockSelect;
+      (mockDb as any).select = mockSelect; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = await sessionService.validateSessionToken(token);
 
@@ -149,11 +149,11 @@ describe('SessionService', () => {
       const mockInnerJoin = mock(() => ({ where: mockWhere }));
       const mockFrom = mock(() => ({ innerJoin: mockInnerJoin }));
       const mockSelect = mock(() => ({ from: mockFrom }));
-      (mockDb as any).select = mockSelect;
+      (mockDb as any).select = mockSelect; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const mockDeleteWhere = mock(() => Promise.resolve());
       const mockDelete = mock(() => ({ where: mockDeleteWhere }));
-      (mockDb as any).delete = mockDelete;
+      (mockDb as any).delete = mockDelete; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = await sessionService.validateSessionToken(token);
 
@@ -182,7 +182,7 @@ describe('SessionService', () => {
       const mockInnerJoin = mock(() => ({ where: mockWhere }));
       const mockFrom = mock(() => ({ innerJoin: mockInnerJoin }));
       const mockSelect = mock(() => ({ from: mockFrom }));
-      (mockDb as any).select = mockSelect;
+      (mockDb as any).select = mockSelect; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = await sessionService.validateSessionToken(token);
 
@@ -209,12 +209,12 @@ describe('SessionService', () => {
       const mockInnerJoin = mock(() => ({ where: mockWhere }));
       const mockFrom = mock(() => ({ innerJoin: mockInnerJoin }));
       const mockSelect = mock(() => ({ from: mockFrom }));
-      (mockDb as any).select = mockSelect;
+      (mockDb as any).select = mockSelect; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const mockUpdateWhere = mock(() => Promise.resolve());
       const mockSet = mock(() => ({ where: mockUpdateWhere }));
       const mockUpdate = mock(() => ({ set: mockSet }));
-      (mockDb as any).update = mockUpdate;
+      (mockDb as any).update = mockUpdate; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const beforeValidation = Date.now();
       const result = await sessionService.validateSessionToken(token);
@@ -225,6 +225,7 @@ describe('SessionService', () => {
       expect(mockUpdate).toHaveBeenCalledWith(sessionsTable);
       expect(mockSet).toHaveBeenCalled();
 
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const renewedExpiration = result.session!.expiresAt.getTime();
       expect(renewedExpiration).toBeGreaterThanOrEqual(beforeValidation + SESSION_DURATION_MS);
       expect(renewedExpiration).toBeLessThanOrEqual(afterValidation + SESSION_DURATION_MS);
@@ -249,12 +250,12 @@ describe('SessionService', () => {
       const mockInnerJoin = mock(() => ({ where: mockWhere }));
       const mockFrom = mock(() => ({ innerJoin: mockInnerJoin }));
       const mockSelect = mock(() => ({ from: mockFrom }));
-      (mockDb as any).select = mockSelect;
+      (mockDb as any).select = mockSelect; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const mockUpdateWhere = mock(() => Promise.resolve());
       const mockSet = mock(() => ({ where: mockUpdateWhere }));
       const mockUpdate = mock(() => ({ set: mockSet }));
-      (mockDb as any).update = mockUpdate;
+      (mockDb as any).update = mockUpdate; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       const result = await sessionService.validateSessionToken(token);
 
@@ -270,7 +271,7 @@ describe('SessionService', () => {
 
       const mockWhere = mock(() => Promise.resolve());
       const mockDelete = mock(() => ({ where: mockWhere }));
-      (mockDb as any).delete = mockDelete;
+      (mockDb as any).delete = mockDelete; // eslint-disable-line @typescript-eslint/no-explicit-any
 
       await sessionService.invalidateSession(sessionId);
 

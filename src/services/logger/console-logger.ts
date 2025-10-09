@@ -15,6 +15,7 @@ export class ConsoleLogger implements Logger {
       ...meta,
     };
 
+    // eslint-disable-next-line no-console
     const output = level === 'error' ? console.error : console.log;
     output(JSON.stringify(logData));
   }
