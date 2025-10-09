@@ -3,9 +3,6 @@ import { createMiddleware } from 'hono/factory';
 import type { Session } from '~/db/schemas/sessions';
 import type { User } from '~/db/schemas/users';
 import { HTTP_STATUS_CODE } from '~/constants/http';
-import SessionService from '../services/session-service';
-
-const sessionService = new SessionService();
 
 interface ObjectWithPassword {
   password?: string;
@@ -45,6 +42,7 @@ export const isAuthorized = createMiddleware<{
     user: User;
   }
 }>(async (c, next) => {
+  const sessionService = c.get('sessionService');
   const token = getCookie(c, 'session');
 
   if (!token) return c.json({ message: 'Unauthorized' }, HTTP_STATUS_CODE.UNAUTHORIZED);

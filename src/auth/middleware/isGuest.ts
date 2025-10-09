@@ -1,11 +1,9 @@
 import type { MiddlewareHandler } from 'hono';
 import { getCookie } from 'hono/cookie';
 import { HTTP_STATUS_CODE } from '~/constants/http';
-import SessionService from '../services/session-service';
-
-const sessionService = new SessionService();
 
 export const isGuest: MiddlewareHandler = async (c, next) => {
+  const sessionService = c.get('sessionService');
   const token = getCookie(c, 'session');
 
   if (token) {

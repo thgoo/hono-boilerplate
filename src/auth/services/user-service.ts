@@ -14,16 +14,12 @@ class UserService {
   }
 
   async getUserByEmail(email: string) {
-    try {
-      const result = await db
-        .select()
-        .from(usersTable)
-        .where(eq(usersTable.email, email));
+    const result = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.email, email));
 
-      return result[0] || null;
-    } catch {
-      throw new Error('Could not fetch user');
-    }
+    return result[0] || null;
   }
 
   async createUser(user: NewUser): Promise<{ id: number }[]> {

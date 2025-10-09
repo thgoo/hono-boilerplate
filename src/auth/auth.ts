@@ -42,7 +42,7 @@ app.post(
     const storedIds = await userService.createUser(user);
     const token = sessionService.generateSessionToken();
 
-    sessionService.createSession(token, storedIds[0].id);
+    await sessionService.createSession(token, storedIds[0].id);
     sessionService.setSessionTokenCookie(
       c.res,
       token,
@@ -77,7 +77,7 @@ app.post(
       }
 
       const token = sessionService.generateSessionToken();
-      sessionService.createSession(token, user.id);
+      await sessionService.createSession(token, user.id);
       sessionService.setSessionTokenCookie(c.res, token);
 
       return c.body(null, HTTP_STATUS_CODE.NO_CONTENT);

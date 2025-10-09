@@ -7,6 +7,7 @@ import PasswordService from '~/auth/services/password-service';
 import SessionService from '~/auth/services/session-service';
 import UserService from '~/auth/services/user-service';
 import { config } from '~/config';
+import { ConsoleLogger } from '~/services/logger';
 import { HttpError } from '~/utils/errors';
 import { isAuthorized } from './auth/middleware/isAuthorized';
 import { isGuest } from './auth/middleware/isGuest';
@@ -16,6 +17,7 @@ export function createApp({
   userService = new UserService(),
   sessionService = new SessionService(),
   passwordService = new PasswordService(),
+  appLogger = new ConsoleLogger(),
   enableLogger = true,
 } = {}) {
   const app = new Hono({ strict: true });
@@ -27,6 +29,7 @@ export function createApp({
     c.set('userService', userService);
     c.set('sessionService', sessionService);
     c.set('passwordService', passwordService);
+    c.set('logger', appLogger);
     await next();
   });
 
@@ -46,6 +49,8 @@ export function createApp({
   });
 
   app.onError(async (err, c) => {
+    const logger = c.get('logger');
+
     if (err instanceof HttpError) {
       return c.json({ message: err.message }, { status: err.statusCode });
     }
@@ -55,12 +60,18 @@ export function createApp({
       return c.json({ message: errMessage }, { status: err.status });
     }
 
-    return c.json(
-      {
-        message: err.message || 'Internal Server Error',
-      }, {
-        status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR,
-      });
+    logger.error('Unhandled error', {
+      error: err.message,
+      stack: err.stack,
+      path: c.req.path,
+      method: c.req.method,
+    });
+
+    const message = config.NODE_ENV === 'production'
+      ? 'Internal Server Error'
+      : err.message;
+
+    return c.json({ message }, { status: HTTP_STATUS_CODE.INTERNAL_SERVER_ERROR });
   });
 
   return app;

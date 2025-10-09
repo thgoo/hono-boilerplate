@@ -99,7 +99,7 @@ describe('UserService', () => {
 
       await expect(userService.getUserByEmail('test@example.com'))
         .rejects
-        .toThrow('Could not fetch user');
+        .toThrow('Database error');
       expect(mockSelect).toHaveBeenCalled();
       expect(mockFrom).toHaveBeenCalledWith(usersTable);
       expect(mockWhere).toHaveBeenCalled();

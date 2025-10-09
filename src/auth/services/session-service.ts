@@ -6,6 +6,7 @@ import {
 import { eq } from 'drizzle-orm';
 import type { SessionValidationResult } from '../types';
 import { config } from '~/config';
+import { SESSION_DURATION_MS, SESSION_RENEWAL_THRESHOLD_MS } from '~/constants/session';
 import db from '~/db';
 import { sessionsTable, type Session } from '~/db/schemas/sessions';
 import { usersTable } from '~/db/schemas/users';
@@ -27,7 +28,7 @@ class SessionService {
     const session: Session = {
       id: sessionId,
       userId,
-      expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30), // 30 days
+      expiresAt: new Date(Date.now() + SESSION_DURATION_MS),
     };
 
     await db.insert(sessionsTable).values(session);
@@ -41,7 +42,7 @@ class SessionService {
   ): void {
     const expiresAtString = (
       expiresAt
-      || new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
+      || new Date(Date.now() + SESSION_DURATION_MS)
     ).toUTCString();
     if (config.NODE_ENV === 'production') {
       // When deployed over HTTPS
@@ -88,8 +89,8 @@ class SessionService {
       return { session: null, user: null };
     }
 
-    if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
-      session.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
+    if (Date.now() >= session.expiresAt.getTime() - SESSION_RENEWAL_THRESHOLD_MS) {
+      session.expiresAt = new Date(Date.now() + SESSION_DURATION_MS);
       await db
         .update(sessionsTable)
         .set({
