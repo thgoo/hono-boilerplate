@@ -73,7 +73,12 @@ class SessionService {
     const sessionId = this.getSessionIdFromToken(token);
     const result = await db
       .select({
-        user: usersTable,
+        user: {
+          id: usersTable.id,
+          name: usersTable.name,
+          document: usersTable.document,
+          email: usersTable.email,
+        },
         session: sessionsTable,
       })
       .from(sessionsTable)

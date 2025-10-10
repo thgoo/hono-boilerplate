@@ -6,7 +6,7 @@ import { usersTable } from '~/db/schemas/users';
 class UserService {
   async userExists(email: string) {
     const result = await db
-      .select()
+      .select({ id: usersTable.id })
       .from(usersTable)
       .where(eq(usersTable.email, email));
 

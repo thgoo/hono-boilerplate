@@ -13,5 +13,5 @@ export const usersTable = mysqlTable('users', {
   password: varchar({ length: 255 }).notNull(),
 });
 
-export type User = InferSelectModel<typeof usersTable>;
+export type User = Omit<InferSelectModel<typeof usersTable>, 'password'>;
 export type NewUser = typeof usersTable.$inferInsert;
